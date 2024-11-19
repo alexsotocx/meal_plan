@@ -12,7 +12,8 @@ pub struct Family {
 
 #[derive(Debug)]
 pub struct MealPlan {
-  week: u8,
+  pub id: u32,
+  pub week: u8,
 }
 
 #[derive(Debug)]
@@ -24,23 +25,25 @@ pub enum MealType {
 
 #[derive(Debug)]
 pub struct PlanItem {
-  date: String,
-  meal_type: MealType,
-  servings: u8,
-  recipe_id: u32
+  pub id: u32,
+  pub date: String,
+  pub meal_type: MealType,
+  pub servings: u8,
+  pub recipe_id: u32
 }
 
 #[derive(Debug)]
 pub struct Recipe {
-  servings: u8,
-  description: String
+  pub id: u32,
+  pub servings: u8,
+  pub description: String
 }
 
 #[derive(Debug)]
 pub struct Ingridient {
-  name: String,
-  unit: String,
-  quantity: f32
+  pub name: String,
+  pub unit: String,
+  pub quantity: f32
 }
 
 

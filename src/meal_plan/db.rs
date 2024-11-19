@@ -4,10 +4,10 @@ pub trait Connection {
     fn execute(&self, q: String) -> Result<String, Error>;
 } 
 
-pub struct dbConnection {
+pub struct DBConnection {
 }
 
-impl Connection for dbConnection {
+impl Connection for DBConnection {
     fn execute(&self, q: String) -> Result<String, Error> {
         return Ok(q)
     }
