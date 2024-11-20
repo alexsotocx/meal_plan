@@ -1,3 +1,4 @@
+pub mod schema;
 mod meal_plan;
 use meal_plan::models::{Family, User};
 
