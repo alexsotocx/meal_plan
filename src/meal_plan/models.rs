@@ -35,16 +35,16 @@ pub struct PlanItem {
     pub recipe_id: u32,
 }
 
-#[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable, Selectable, Insertable)]
 #[diesel(table_name = crate::schema::recipes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Recipe {
-    id: uuid::Uuid,
-    name: String,
-    description: String,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>,
-    servings: i16,
+    pub id: uuid::Uuid,
+    pub name: String,
+    pub description: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub servings: i16,
 }
 
 #[derive(Debug, Queryable, Selectable)]
