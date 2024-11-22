@@ -1,4 +1,5 @@
 use diesel::prelude::*;
+use chrono::{DateTime, Utc};
 
 #[derive(Debug)]
 pub struct User {
@@ -38,20 +39,23 @@ pub struct PlanItem {
 #[diesel(table_name = crate::schema::recipes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Recipe {
-    pub id: String,
-    pub servings: u8,
-    pub description: String,
-    pub created_at: String,
-    pub updated_at: String,
+    id: uuid::Uuid,
+    name: String,
+    description: String,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+    servings: i16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Queryable, Selectable)]
+#[diesel(table_name = crate::schema::ingridients)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Ingridient {
-    pub id: String,
-    pub recipe_id: String,
-    pub name: String,
-    pub unit: String,
-    pub quantity: f32,
-    pub created_at: String,
-    pub updated_at: String,
+    id: uuid::Uuid,
+    name: String,
+    unit: String,
+    quantity: bigdecimal::BigDecimal,
+    recipe_id: uuid::Uuid,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
 }

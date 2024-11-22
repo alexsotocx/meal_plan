@@ -8,7 +8,7 @@ diesel::table! {
         #[max_length = 256]
         unit -> Varchar,
         quantity -> Numeric,
-        recipe_id -> Nullable<Uuid>,
+        recipe_id -> Uuid,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
     }
@@ -22,6 +22,7 @@ diesel::table! {
         description -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
+        servings -> Int2,
     }
 }
 
