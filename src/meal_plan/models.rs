@@ -1,5 +1,5 @@
-use diesel::prelude::*;
 use chrono::{DateTime, Utc};
+use diesel::prelude::*;
 
 #[derive(Debug)]
 pub struct User {

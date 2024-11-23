@@ -15,7 +15,8 @@ impl<'a> IngridientInterface for IngridientRepository<'a> {
         use crate::schema::ingridients;
 
         diesel::insert_into(ingridients::table)
-            .values(ingridients).execute(self.db_connection)
+            .values(ingridients)
+            .execute(self.db_connection)
             .expect("Error inserting recipe");
     }
 }

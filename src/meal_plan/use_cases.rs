@@ -22,8 +22,8 @@ pub struct RecipePayload {
 pub struct CreateRecipePayload<'a, 'b, 'c> {
     pub recipe: RecipePayload,
     pub ingridients: Vec<&'a IngridientPayload>,
-    pub ingridients_repository: &'b mut  dyn IngridientInterface,
-    pub recipe_repository: &'c mut  dyn RecipeRepositoryInterface,
+    pub ingridients_repository: &'b mut dyn IngridientInterface,
+    pub recipe_repository: &'c mut dyn RecipeRepositoryInterface,
 }
 
 #[derive(Debug)]
@@ -62,7 +62,7 @@ pub fn create_recipe(payload: &mut CreateRecipePayload) -> CreateRecipeResponse 
 
     return CreateRecipeResponse {
         recipe,
-        ingridients: recipe_ingridient
+        ingridients: recipe_ingridient,
     };
 }
 
@@ -174,4 +174,3 @@ mod tests {
         assert!(response.ingridients.is_empty());
     }
 }
-
