@@ -3,7 +3,7 @@ use diesel::{PgConnection, RunQueryDsl};
 use crate::meal_plan::models::Ingridient;
 
 pub trait IngridientInterface {
-    fn create(self, ingridients: &Vec<Ingridient>);
+    fn create(&mut self, ingridients: &Vec<Ingridient>);
 }
 
 pub struct IngridientRepository<'a> {
@@ -11,7 +11,7 @@ pub struct IngridientRepository<'a> {
 }
 
 impl<'a> IngridientInterface for IngridientRepository<'a> {
-    fn create(self, ingridients: &Vec<Ingridient>) {
+    fn create(&mut self, ingridients: &Vec<Ingridient>) {
         use crate::schema::ingridients;
 
         diesel::insert_into(ingridients::table)
