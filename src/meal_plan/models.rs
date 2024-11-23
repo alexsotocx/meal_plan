@@ -47,15 +47,15 @@ pub struct Recipe {
     pub servings: i16,
 }
 
-#[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable, Selectable, Insertable)]
 #[diesel(table_name = crate::schema::ingridients)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Ingridient {
-    id: uuid::Uuid,
-    name: String,
-    unit: String,
-    quantity: bigdecimal::BigDecimal,
-    recipe_id: uuid::Uuid,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>,
+    pub id: uuid::Uuid,
+    pub name: String,
+    pub unit: String,
+    pub quantity: bigdecimal::BigDecimal,
+    pub recipe_id: uuid::Uuid,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
 }

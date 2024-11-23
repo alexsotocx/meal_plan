@@ -1,80 +1,66 @@
-// use super::{db::Connection, models::{Ingridient, Recipe}};
+use bigdecimal::{BigDecimal, FromPrimitive};
+use chrono::Utc;
+use uuid::Uuid;
 
- 
-// struct IngridientPayload {
-//     name: String,
-//     quantity: f32,
-//     unit: String,
-// }
-// pub struct CreateRecipePayload<'a> {
-//     name: String,
-//     servings: u8,
-//     ingridients: Vec<&'a IngridientPayload>
-// }
+use super::{
+    models::{Ingridient, Recipe},
+    repositories::{ingridients::IngridientInterface, recipes::RecipeRepositoryInterface},
+};
 
-// pub struct CreateRecipeResponse {
-//     recipe: Recipe,
-//     ingridients: Vec<Ingridient>
-// }
+pub struct IngridientPayload {
+    name: String,
+    quantity: f32,
+    unit: String,
+}
 
-// pub fn create_recipe(payload: &CreateRecipePayload, db:  &dyn Connection) -> CreateRecipeResponse {
-//     let q = format!("INSERT INTO recipes(id, name, services) VALUES ({}, {}, {})", 1, payload.name, payload.servings);
-//     let mut ingridients_array = vec![];
-//     db.execute(q).unwrap();
-//     for p in &payload.ingridients {
-//         let q = format!("INSERT INTO ingridients(id, name, quantity, unit) VALUES ({}, {}, {}, {})", 1, p.name, p.quantity, p.unit);
-//         db.execute(q).unwrap();
-//         ingridients_array.push(Ingridient {
-//             name: p.name.clone(),
-//             quantity: p.quantity,
-//             unit: p.unit.clone()
-//         });
-//     }
+pub struct RecipePayload {
+    name: String,
+    description: String,
+    servings: i16,
+}
 
-//     return CreateRecipeResponse {
-//         recipe: Recipe {
-//             id: 1,
-//             servings: payload.servings,
-//             description: payload.name.clone()
-//         },
-//         ingridients: ingridients_array
-//     }
-// }
+pub struct CreateRecipePayload<'a, 'b, 'c> {
+    recipe: RecipePayload,
+    ingridients: Vec<&'a IngridientPayload>,
+    ingridients_repository: &'b dyn IngridientInterface,
+    recipe_repository: &'c dyn RecipeRepositoryInterface,
+}
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     use std::fmt::Error;
+pub struct CreateRecipeResponse {
+    recipe: Recipe,
+    ingridients: Vec<Ingridient>,
+}
 
-//     struct MockConnection {
-//     }
+pub fn create_recipe(payload: &CreateRecipePayload) -> CreateRecipeResponse {
+    let now = Utc::now();
+    let recipe = Recipe {
+        id: uuid::Uuid::new_v4(),
+        name: payload.recipe.name.clone(),
+        servings: payload.recipe.servings,
+        description: payload.recipe.description.clone(),
+        created_at: now,
+        updated_at: now,
+    };
 
-//     impl Connection for MockConnection {
-//         fn execute(&self, q: String) -> Result<String, Error> {
-//             return Ok(q)
-//         }
-//     }
+    let mut recipe_ingridient: Vec<Ingridient> = vec![];
 
-//     #[test]
-//     fn test_create_recipe() {
-//         let ingridient = IngridientPayload {
-//             name: "test".to_string(),
-//             quantity: 1.0,
-//             unit: "kg".to_string()
-//         };
-//         let payload = CreateRecipePayload {
-//             name: "test".to_string(),
-//             servings: 1,
-//             ingridients: vec![&ingridient]
-//         };
-//         let db = MockConnection {};
-//         let response = create_recipe(&payload, &db);
-//         assert_eq!(response.recipe.id, 1);
-//         assert_eq!(response.recipe.servings, 1);
-//         assert_eq!(response.recipe.description, "test");
-//         assert_eq!(response.ingridients.len(), 1);
-//         assert_eq!(response.ingridients[0].name, "test");
-//         assert_eq!(response.ingridients[0].quantity, 1.0);
-//         assert_eq!(response.ingridients[0].unit, "kg");
-//     }
-// }
+    for ing in &(payload.ingridients) {
+        recipe_ingridient.push(Ingridient {
+            id: Uuid::new_v4(),
+            recipe_id: recipe.id.clone(),
+            updated_at: now,
+            created_at: now,
+            name: ing.name.clone(),
+            unit: ing.unit.clone(),
+            quantity: BigDecimal::from_f32(ing.quantity).unwrap(),
+        });
+    }
+
+    payload.recipe_repository.create(&recipe);
+    payload.ingridients_repository.create(&recipe_ingridient);
+
+    return CreateRecipeResponse {
+        recipe,
+        ingridients: recipe_ingridient
+    };
+}

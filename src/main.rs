@@ -2,14 +2,8 @@ mod meal_plan;
 pub mod schema;
 use std::env;
 
-use chrono::{DateTime, Utc};
 use diesel::{Connection, PgConnection};
 use dotenvy::dotenv;
-use meal_plan::{
-    models::Recipe,
-    repositories::recipes::{RecipeRepository, RecipeRepositoryInterface},
-};
-use uuid::{Uuid};
 
 fn establish_connection() -> PgConnection {
     dotenv().ok();
@@ -20,16 +14,7 @@ fn establish_connection() -> PgConnection {
 }
 
 fn main() {
-    let repo = RecipeRepository {
-        db_connection: &mut establish_connection(),
-    };
+    let mut db_connection = establish_connection();
 
-    repo.create(&Recipe {
-        id: Uuid::new_v4(),
-        name: "Test Recipe".to_string(),
-        description: "Test".to_string(),
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
-        servings: 4,
-    });
+
 }
