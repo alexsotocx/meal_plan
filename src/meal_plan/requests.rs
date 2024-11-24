@@ -1,1 +1,1 @@
-pub mod create_recipe;
+pub mod recipes;

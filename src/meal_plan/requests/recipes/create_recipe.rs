@@ -4,7 +4,7 @@ use crate::meal_plan::{
     db::DbPool, repositories::{ingridients, recipes}, use_cases::{self, CreateRecipePayload, CreateRecipeResponse}
 };
 
-#[post("/recipe", format = "json", data = "<payload>")]
+#[post("/", format = "json", data = "<payload>")]
 pub async fn create_recipe_handler(
     pool: &State<DbPool>,
     payload: Json<CreateRecipePayload>,
