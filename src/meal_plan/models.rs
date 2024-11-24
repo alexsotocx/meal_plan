@@ -36,7 +36,7 @@ pub struct PlanItem {
     pub recipe_id: u32,
 }
 
-#[derive(Debug, Queryable, Selectable, Insertable, Serialize)]
+#[derive(Debug, Queryable, Selectable, Insertable, Serialize, Identifiable)]
 #[diesel(table_name = crate::schema::recipes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Recipe {
@@ -48,8 +48,9 @@ pub struct Recipe {
     pub servings: i16,
 }
 
-#[derive(Debug, Queryable, Selectable, Insertable, Serialize)]
+#[derive(Debug, Queryable, Selectable, Insertable, Serialize, Associations, Identifiable)]
 #[diesel(table_name = crate::schema::ingridients)]
+#[diesel(belongs_to(Recipe))]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Ingridient {
     pub id: uuid::Uuid,

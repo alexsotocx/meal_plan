@@ -72,6 +72,8 @@ pub fn create_recipe(
 
 #[cfg(test)]
 mod tests {
+    use crate::meal_plan::repositories::recipes::RecipeWithIngridients;
+
     use super::*;
     use mockall::predicate::*;
     use mockall::*;
@@ -80,6 +82,7 @@ mod tests {
         RecipeRepository {}
         impl RecipeRepositoryInterface for RecipeRepository {
             fn create(&mut self, recipe: &Recipe, ingridients: &Vec<Ingridient>);
+            fn get(&mut self, id: Uuid) -> RecipeWithIngridients;
         }
     }
 
