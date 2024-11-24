@@ -1,5 +1,6 @@
 use bigdecimal::{BigDecimal, FromPrimitive};
 use chrono::Utc;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use super::{
@@ -7,11 +8,14 @@ use super::{
     repositories::{ingridients::IngridientInterface, recipes::RecipeRepositoryInterface},
 };
 
+#[derive(Serialize, Deserialize)]
 pub struct IngridientPayload {
     pub name: String,
     pub quantity: f32,
     pub unit: String,
 }
+
+#[derive(Serialize, Deserialize)]
 
 pub struct RecipePayload {
     pub name: String,
@@ -19,20 +23,24 @@ pub struct RecipePayload {
     pub servings: i16,
 }
 
-pub struct CreateRecipePayload<'a, 'b, 'c> {
+#[derive(Serialize, Deserialize)]
+pub struct CreateRecipePayload{
     pub recipe: RecipePayload,
-    pub ingridients: Vec<&'a IngridientPayload>,
-    pub ingridients_repository: &'b mut dyn IngridientInterface,
-    pub recipe_repository: &'c mut dyn RecipeRepositoryInterface,
+    pub ingridients: Vec<IngridientPayload>,
 }
 
-#[derive(Debug)]
+
+#[derive(Serialize)]
 pub struct CreateRecipeResponse {
     pub recipe: Recipe,
     pub ingridients: Vec<Ingridient>,
 }
 
-pub fn create_recipe(payload: &mut CreateRecipePayload) -> CreateRecipeResponse {
+pub fn create_recipe(
+    payload: &CreateRecipePayload,
+    ingridients_repository: &mut dyn IngridientInterface,
+    recipe_repository: &mut dyn RecipeRepositoryInterface,
+) -> CreateRecipeResponse {
     let now = Utc::now();
     let recipe = Recipe {
         id: uuid::Uuid::new_v4(),
@@ -57,8 +65,8 @@ pub fn create_recipe(payload: &mut CreateRecipePayload) -> CreateRecipeResponse 
         });
     }
 
-    payload.recipe_repository.create(&recipe);
-    payload.ingridients_repository.create(&recipe_ingridient);
+    recipe_repository.create(&recipe);
+    ingridients_repository.create(&recipe_ingridient);
 
     return CreateRecipeResponse {
         recipe,
@@ -121,14 +129,16 @@ mod tests {
             servings: 4,
         };
 
-        let mut payload = CreateRecipePayload {
+        let payload = CreateRecipePayload {
             recipe: recipe_payload,
-            ingridients: vec![&ingridient1, &ingridient2],
-            ingridients_repository: &mut mock_ingridient_repo,
-            recipe_repository: &mut mock_recipe_repo,
+            ingridients: vec![ingridient1, ingridient2],
         };
 
-        let response = create_recipe(&mut payload);
+        let response = create_recipe(
+            &payload,
+            &mut mock_ingridient_repo,
+            &mut mock_recipe_repo,
+        );
 
         assert_eq!(response.recipe.name, "Test Recipe");
         assert_eq!(response.recipe.servings, 4);
@@ -160,14 +170,16 @@ mod tests {
             servings: 2,
         };
 
-        let mut payload = CreateRecipePayload {
+        let payload = CreateRecipePayload {
             recipe: recipe_payload,
             ingridients: vec![],
-            ingridients_repository: &mut mock_ingridient_repo,
-            recipe_repository: &mut mock_recipe_repo,
         };
 
-        let response = create_recipe(&mut payload);
+        let response = create_recipe(
+            &payload,
+            &mut mock_ingridient_repo,
+            &mut mock_recipe_repo,
+        );
 
         assert_eq!(response.recipe.name, "Empty Ingridients Recipe");
         assert_eq!(response.recipe.servings, 2);

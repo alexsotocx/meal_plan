@@ -1,13 +1,17 @@
-use std::fmt::Error;
+use diesel::r2d2::{self, ConnectionManager};
+use diesel::PgConnection;
+use std::env;
+use dotenvy::dotenv;
 
-pub trait Connection {
-    fn execute(&self, q: String) -> Result<String, Error>;
-}
+pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-pub struct DBConnection {}
+pub fn establish_connection_pool() -> DbPool {
+    dotenv().ok();
 
-impl Connection for DBConnection {
-    fn execute(&self, q: String) -> Result<String, Error> {
-        return Ok(q);
-    }
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+
+    r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.")
 }

@@ -6,7 +6,9 @@
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
-		"ghcr.io/devcontainers/features/common-utils:2": {}
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installOhMyZsh": true
+		}
 	},
 	"customizations": {
 		"vscode": {
@@ -14,13 +16,15 @@
 				"inferrinizzard.prettier-sql-vscode"
 			]
 		}
-	}
+	},
+
+	// post install
+	"postCreateCommand": "cargo install diesel_cli --no-default-features --features postgres"
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5432],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "rustc --version",

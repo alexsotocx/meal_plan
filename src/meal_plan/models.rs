@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
+use serde::Serialize;
 
 #[derive(Debug)]
 pub struct User {
@@ -35,7 +36,7 @@ pub struct PlanItem {
     pub recipe_id: u32,
 }
 
-#[derive(Debug, Queryable, Selectable, Insertable)]
+#[derive(Debug, Queryable, Selectable, Insertable, Serialize)]
 #[diesel(table_name = crate::schema::recipes)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Recipe {
@@ -47,7 +48,7 @@ pub struct Recipe {
     pub servings: i16,
 }
 
-#[derive(Debug, Queryable, Selectable, Insertable)]
+#[derive(Debug, Queryable, Selectable, Insertable, Serialize)]
 #[diesel(table_name = crate::schema::ingridients)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Ingridient {
