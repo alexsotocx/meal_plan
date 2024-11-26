@@ -15,6 +15,29 @@ diesel::table! {
 }
 
 diesel::table! {
+    meal_plan_items (id) {
+        id -> Uuid,
+        meal_plan_id -> Uuid,
+        recipe_id -> Uuid,
+        date -> Date,
+        servings -> Int2,
+        meal_type -> Int2,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
+    meal_plans (id) {
+        id -> Uuid,
+        week -> Int2,
+        year -> Int2,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     recipes (id) {
         id -> Uuid,
         #[max_length = 256]
@@ -30,5 +53,7 @@ diesel::joinable!(ingridients -> recipes (recipe_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     ingridients,
+    meal_plan_items,
+    meal_plans,
     recipes,
 );
