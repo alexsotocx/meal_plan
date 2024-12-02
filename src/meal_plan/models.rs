@@ -1,7 +1,7 @@
 use std::io::Write;
 
 use crate::schema::sql_types::MealTypeSql;
-use chrono::{Date, DateTime, NaiveDate, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use diesel::deserialize::{FromSql, FromSqlRow};
 use diesel::pg::PgValue;
 use diesel::serialize::Output;
