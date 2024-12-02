@@ -5,8 +5,8 @@ CREATE TABLE
         description TEXT NOT NULL,
         created_at TIMESTAMP
         WITH
-            TIME ZONE NOT NULL,
-            updated_at TIMESTAMP
+            TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP
         WITH
-            TIME ZONE NOT NULL
+            TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
     );

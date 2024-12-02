@@ -1,5 +1,11 @@
 // @generated automatically by Diesel CLI.
 
+pub mod sql_types {
+    #[derive(diesel::query_builder::QueryId, Clone, diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "MealTypeSql"))]
+    pub struct MealTypeSql;
+}
+
 diesel::table! {
     ingridients (id) {
         id -> Uuid,
@@ -15,15 +21,18 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::MealTypeSql;
+
     meal_plan_items (id) {
         id -> Uuid,
         meal_plan_id -> Uuid,
         recipe_id -> Uuid,
         date -> Date,
         servings -> Int2,
-        meal_type -> Int2,
-        created_at -> Nullable<Timestamp>,
-        updated_at -> Nullable<Timestamp>,
+        meal_type -> MealTypeSql,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
@@ -32,8 +41,8 @@ diesel::table! {
         id -> Uuid,
         week -> Int2,
         year -> Int2,
-        created_at -> Nullable<Timestamp>,
-        updated_at -> Nullable<Timestamp>,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
