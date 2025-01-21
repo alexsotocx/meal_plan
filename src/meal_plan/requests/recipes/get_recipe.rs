@@ -61,9 +61,6 @@ mod tests {
     #[async_test]
     async fn test_get_recipe_handler() {
         let pool = connect_db("recipe_test");
-        let conn = &mut pool.get().expect("Failed to get DB connection from pool");
-
-        conn.begin_test_transaction().unwrap();
         let recipe = Recipe {
             id: Uuid::new_v4(),
             name: "Test recipe".to_string(),
@@ -73,10 +70,14 @@ mod tests {
             servings: 4,
         };
 
-        diesel::insert_into(crate::schema::recipes::table)
-            .values(&recipe)
-            .execute(conn)
-            .expect("Failed to insert recipe");
+        {
+            // Release connection client after the block
+            let conn = &mut pool.get().expect("Failed to get DB connection from pool");
+            diesel::insert_into(crate::schema::recipes::table)
+                .values(&recipe)
+                .execute(conn)
+                .expect("Failed to insert recipe");
+        }
 
         let response = get_recipe_handler(&State::from(&pool), &recipe.id.to_string())
             .await
