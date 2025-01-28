@@ -20,47 +20,14 @@ pub async fn get_recipe_handler(pool: &State<DbPool>, id: &str) -> Json<RecipeWi
 mod tests {
     use super::*;
     use crate::meal_plan::models::Recipe;
+    use crate::test_helpers;
     use chrono::Utc;
     use diesel::prelude::*;
-    use diesel::r2d2::ConnectionManager;
-    use diesel::sql_query;
-    use diesel::PgConnection;
-    use diesel::{connection::SimpleConnection, r2d2::Pool};
-    use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
-    use rocket::http::hyper::server::conn;
     use uuid::Uuid;
-
-    pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
-
-    pub fn connect_db(test_db: &str) -> Pool<ConnectionManager<PgConnection>> {
-        let pool = crate::meal_plan::db::establish_connection_pool(
-            "postgres://postgres:postgres@db".to_string(),
-            1,
-        );
-        let conn = &mut pool.get().expect("Failed to get DB connection from pool");
-        sql_query(format!("DROP DATABASE IF EXISTS {}", test_db).as_str())
-            .execute(conn)
-            .expect("Error deleting test database");
-
-        sql_query(format!("CREATE DATABASE {}", test_db).as_str())
-            .execute(conn)
-            .expect("Error creating test database");
-
-        let pool = crate::meal_plan::db::establish_connection_pool(
-            format!("postgres://postgres:postgres@db/{}", test_db),
-            1,
-        );
-
-        let conn = &mut pool.get().expect("Failed to get DB connection from pool");
-        conn.run_pending_migrations(MIGRATIONS)
-            .expect("Failed to run migrations");
-
-        return pool;
-    }
 
     #[async_test]
     async fn test_get_recipe_handler() {
-        let pool = connect_db("recipe_test");
+        let pool = test_helpers::connect_db("recipe_test");
         let recipe = Recipe {
             id: Uuid::new_v4(),
             name: "Test recipe".to_string(),

@@ -3,6 +3,9 @@ extern crate rocket;
 mod meal_plan;
 pub mod schema;
 
+#[cfg(test)]
+pub mod test_helpers;
+
 use std::env;
 
 use dotenvy::dotenv;
